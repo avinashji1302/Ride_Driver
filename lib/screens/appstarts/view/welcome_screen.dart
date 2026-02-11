@@ -1,4 +1,6 @@
 import 'package:app/config/colors/app_color.dart';
+import 'package:app/screens/auth/login/view/login_screen.dart';
+import 'package:app/screens/auth/register/view/register_screen.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -11,7 +13,7 @@ class WelcomeScreen extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            // mainAxisAlignment: MainAxisAlignment.center,
             children: [
               /// Illustration
               Image.asset(
@@ -29,7 +31,8 @@ class WelcomeScreen extends StatelessWidget {
               const SizedBox(height: 10),
 
               const Text(
-                "Earn with us",
+                textAlign: TextAlign.center,
+                "Welcome to our Ride and do not go back\n to those terrible apps",
                 style: TextStyle(color: Colors.grey, fontSize: 14),
               ),
 
@@ -47,7 +50,7 @@ class WelcomeScreen extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    // Navigator.push(context, MaterialPageRoute(builder: (context)=>SignUpScreen()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>RegisterScreenOne()));
                   },
                   child: const Text(
                     "Create an account",
@@ -70,7 +73,7 @@ class WelcomeScreen extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    // Navigator.push(context, MaterialPageRoute(builder: (context)=>SignInPage()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
                   },
                   child: const Text(
                     "Login",
