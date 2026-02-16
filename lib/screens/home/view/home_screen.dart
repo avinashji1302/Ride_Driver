@@ -1,4 +1,5 @@
 import 'package:app/config/colors/app_color.dart';
+import 'package:app/config/socket/socket.dart';
 import 'package:app/screens/home/components/home_page.dart';
 import 'package:app/screens/home/components/map_page.dart';
 import 'package:app/screens/home/components/upcoming_ride.dart';
@@ -6,8 +7,30 @@ import 'package:app/screens/home/viewModel/home_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
+@override
+  void initState() {
+    super.initState();
+
+    final homeProvider = context.read<HomeProvider>();
+   
+
+    SocketService().attachHomeProvider(homeProvider);
+
+    
+   
+
+    debugPrint("🏠 HomePage initialized & provider attached");
+  }
+
 
   @override
   Widget build(BuildContext context) {

@@ -25,6 +25,7 @@ class ApiResponse<T> {
           (json['results'] as Map).isNotEmpty) {
         try {
           data = fromJsonT(json['results']);
+            debugPrint("✅ Data parsed successfully: ${data != null} $data");
         } catch (e) {
           debugPrint("Data parsing error: $e");
           // Don't fail, just set data to null

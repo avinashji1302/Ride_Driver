@@ -10,7 +10,7 @@ class LoginProvider extends ChangeNotifier {
   final AuthStorage _storage = AuthStorage();
 
   final TextEditingController numberController = TextEditingController(
-    text: "7777777777",
+    text: "9876543210",
   );
   final TextEditingController otpController = TextEditingController(
     text: "1234",
@@ -72,8 +72,8 @@ class LoginProvider extends ChangeNotifier {
       debugPrint("passed data is : $mobileOtpId ${otpController.text} $deviceId ");
       isloading = false;
       notifyListeners();
-
-      debugPrint("response is : ${response.data}");
+//  debugPrint("response is : ${response.data!.id}");
+//       debugPrint("token  is : ${response.data!.token}");
 
       if (response.success && response.data != null) {
         await _storage.saveSession(
@@ -81,8 +81,15 @@ class LoginProvider extends ChangeNotifier {
           refreshToken: response.data!.refreshToken,
         );
 
+        await _storage.saveUserId(response.data!.id);
+
          final accessToken = await _storage.getAccessToken();
-           SocketService().connect(accessToken!);
+           final driverId = await _storage.getUserId();
+
+          debugPrint("raccess : ${accessToken}. $driverId");
+             debugPrint("driverId}. $driverId");
+
+           SocketService().connect(accessToken!, driverId!);
 
         return ApiResponse(
           success: response.success,

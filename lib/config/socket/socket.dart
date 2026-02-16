@@ -1,5 +1,5 @@
-
 import 'package:app/config/networks/api_endpoints.dart';
+import 'package:app/screens/home/model/Socket/ride_accept_socket_model.dart';
 import 'package:app/screens/home/viewModel/home_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -11,7 +11,7 @@ class SocketService {
 
   IO.Socket? socket;
 
-    late HomeProvider _homeProvider;
+  late HomeProvider _homeProvider;
 
   /// Inject provider ONCE
   void attachHomeProvider(HomeProvider provider) {
@@ -19,8 +19,9 @@ class SocketService {
     debugPrint("🧩 HomeProvider attached to SocketService");
   }
 
+  void connect(String token , String driverId) {
 
-  void connect(String token) {
+    debugPrint("driver id : ${driverId}");
     if (socket != null && socket!.connected) {
       debugPrint("⚠️ Socket already connected");
       return;
@@ -37,11 +38,11 @@ class SocketService {
           .build(),
     );
 
-    _registerDriverListeners();
+    _registerDriverListeners(driverId);
     socket!.connect();
   }
 
-  void _registerDriverListeners() {
+  void _registerDriverListeners(String driverId) {
     // Log all events
     socket!.onAny((event, data) {
       debugPrint("━━━━━━━━━━━━━━━━━━━━");
@@ -53,87 +54,101 @@ class SocketService {
     socket!.onConnect((_) {
       debugPrint("🟢 DRIVER SOCKET CONNECTED");
       // Mark driver as online
-      socket!.emit('driver:online');
+      debugPrint("driveid : $driverId");
+      socket!.emit('driver:online' , driverId);
+
+      //  socket.emit("driver:online", driverId);
     });
 
     // Server acknowledges driver is online
     socket!.on("driver:online:ack", (data) {
-      debugPrint("✅ Driver is now online: $data");
-     
+      debugPrint("✅ Driver is now online: ${data['ok']}");
     });
+
+    // socket!.on("connect", () {
+    //   print(
+    //     "✅ Socket connected: "
+    //     "socket.id. ",
+    //   );
+    //   // Automatically go online after connection
+    //   // socket.emit("driver:online", driverId);
+    //   // log("📤 Sent driver:online for driver: " + driverId);
+    // });
+
+ 
 
     // New ride offered to driver
     socket!.on("ride:new", (data) {
       debugPrint("🆕 NEW RIDE OFFERED: $data");
       // Parse and show to driver
-      _homeProvider.newRideComing();
-     
+      // _homeProvider.incomingRide(data);
+
+       debugPrint("🆕 NEW RIDE OFFERED: $data");
+
+  
+      try {
+        final ride = RideAcceptedSocketModel.fromJson(data);
+
+        
+        _homeProvider.incomingRide(ride);
+      } catch (e) {
+        debugPrint("❌ Ride parse error: $e");
+      }
     });
 
     // Response after driver accepts ride
     socket!.on("ride:accept:response", (data) {
       debugPrint("✅ RIDE ACCEPT RESPONSE: $data");
-      
     });
 
     // Response after driver marks arrived
     socket!.on("ride:arrived:response", (data) {
       debugPrint("📍 ARRIVED RESPONSE: $data");
-      
     });
 
     // Response after driver starts ride
     socket!.on("ride:start:response", (data) {
       debugPrint("🚗 RIDE START RESPONSE: $data");
-     
     });
 
     // Response after driver reaches destination
     socket!.on("ride:reachedDestination:response", (data) {
       debugPrint("🏁 REACHED DESTINATION RESPONSE: $data");
-     
     });
 
     // Response after driver confirms payment received
     socket!.on("driver:receivedPayment:response", (data) {
       debugPrint("💰 PAYMENT RECEIVED RESPONSE: $data");
-     
     });
 
     // User cancelled the ride
     socket!.on("driver:rideCancelled", (data) {
       debugPrint("❌ USER CANCELLED RIDE: $data");
-     
     });
 
     // Ride completed (wallet payment)
     socket!.on("driver:rideCompleted", (data) {
       debugPrint("🎉 RIDE COMPLETED: $data");
-     
     });
 
     // Response after driver cancels
     socket!.on("ride:cancel:response", (data) {
       debugPrint("🚫 CANCEL RESPONSE: $data");
-      
     });
 
     // Chat room join response
     socket!.on("ride:joinRoom:response", (data) {
       debugPrint("💬 JOIN ROOM RESPONSE: $data");
-      
     });
 
     // Chat message sent response
     socket!.on("ride:sendMessage:response", (data) {
       debugPrint("📤 SEND MESSAGE RESPONSE: $data");
-     
     });
 
     // Receive chat message
     socket!.on("ride:receiveMessage", (data) {
       debugPrint("📩 NEW MESSAGE: $data");
-    
     });
 
     socket!.onDisconnect((_) {
@@ -161,19 +176,13 @@ class SocketService {
   /// Accept a ride
   void acceptRide(String rideId, String driverId) {
     debugPrint("✅ Accepting ride: $rideId");
-    socket?.emit('ride:accept', {
-      'rideId': rideId,
-      'driverId': driverId,
-    });
+    socket?.emit('ride:accept', {'rideId': rideId, 'driverId': driverId});
   }
 
   /// Mark arrived at pickup
   void markArrived(String rideId, String driverId) {
     debugPrint("📍 Marking arrived at pickup");
-    socket?.emit('ride:arrived', {
-      'rideId': rideId,
-      'driverId': driverId,
-    });
+    socket?.emit('ride:arrived', {'rideId': rideId, 'driverId': driverId});
   }
 
   /// Start the ride with OTP
@@ -210,7 +219,6 @@ class SocketService {
     socket?.emit('ride:cancel:driver', {
       'rideId': rideId,
       'driverId': driverId,
-      
     });
   }
 
@@ -223,10 +231,7 @@ class SocketService {
   /// Send chat message
   void sendChatMessage(String rideId, String text) {
     debugPrint("📤 Sending message: $text");
-    socket?.emit('ride:sendMessage', {
-      'rideId': rideId,
-      'text': text,
-    });
+    socket?.emit('ride:sendMessage', {'rideId': rideId, 'text': text});
   }
 
   void disconnect() {
@@ -236,3 +241,4 @@ class SocketService {
     socket = null;
   }
 }
+

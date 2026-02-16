@@ -3,7 +3,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     
     <application
-        android:label="appname"
+        android:label="Ride Driver"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

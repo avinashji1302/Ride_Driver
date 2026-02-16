@@ -1,10 +1,7 @@
-import 'package:app/config/socket/socket.dart';
 import 'package:app/config/storage/auth_storage.dart';
 import 'package:app/screens/appstarts/view/welcome_screen.dart';
-import 'package:app/screens/auth/login/view/login_screen.dart';
 import 'package:app/screens/auth/login/viewModel/login_provider.dart';
 import 'package:app/screens/auth/register/viewModel/register_provider.dart';
-import 'package:app/screens/home/view/home_screen.dart';
 import 'package:app/screens/home/viewModel/home_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -73,7 +70,7 @@ class _AuthCheckState extends State<AuthCheck> {
 
         if (_isLoggedIn) {
           debugPrint("inside :.......... ");
-          SocketService().connect(accessToken!);
+          // SocketService().connect(accessToken!);
         }
       });
 
@@ -97,6 +94,6 @@ class _AuthCheckState extends State<AuthCheck> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    return _isLoggedIn ? const HomeScreen() : const WelcomeScreen();
+    return  const WelcomeScreen();
   }
 }

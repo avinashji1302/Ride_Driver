@@ -1,18 +1,19 @@
 import 'package:app/config/colors/app_color.dart';
+import 'package:app/config/common/snacbar/top_snacbar.dart';
+import 'package:app/config/common/widgets/cylinder.dart';
 import 'package:app/screens/home/viewModel/home_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
-
 class RideStartedSheet extends StatelessWidget {
-   RideStartedSheet({super.key});
+  const RideStartedSheet({super.key});
 
   @override
   Widget build(BuildContext context) {
     // ✅ Access provider directly from context
     final controller = context.watch<HomeProvider>();
-    
+    final data = controller.rideDetails;
+
     return DraggableScrollableSheet(
       initialChildSize: 0.40,
       minChildSize: 0.25,
@@ -29,6 +30,7 @@ class RideStartedSheet extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                cylinderLine(),
                 const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -36,7 +38,7 @@ class RideStartedSheet extends StatelessWidget {
                     Icon(Icons.directions_car, color: Colors.yellow),
                     SizedBox(width: 8),
                     Text(
-                      "Ride in progress ",
+                      "You accepted the ride",
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -45,7 +47,7 @@ class RideStartedSheet extends StatelessWidget {
                   ],
                 ),
                 const Divider(),
-                const SizedBox(height: 14),
+            
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -59,9 +61,10 @@ class RideStartedSheet extends StatelessWidget {
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children:  [
+                        children: [
                           Text(
-                            "some",
+                            controller.rideDetails?.driver?.fullName ??
+                                "name not found",
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
@@ -69,7 +72,7 @@ class RideStartedSheet extends StatelessWidget {
                           ),
                           SizedBox(height: 4),
                           Text(
-                            "Distance : 3km",
+                            "Distance : ${data?.ride?.distance}km",
                             style: TextStyle(
                               fontSize: 13,
                               color: AppColor.grey,
@@ -84,10 +87,13 @@ class RideStartedSheet extends StatelessWidget {
                                 color: AppColor.primaryYellow,
                               ),
                               SizedBox(width: 4),
-                              Text("4.3", style: TextStyle(fontSize: 13)),
+                              Text(
+                                data!.driverRating!.averageRating.toString(),
+                                style: TextStyle(fontSize: 13),
+                              ),
                               SizedBox(width: 8),
                               Text(
-                               controller.tapBottemIndex.toString(),
+                                controller.tapBottemIndex.toString(),
                                 style: TextStyle(
                                   fontSize: 13,
                                   color: AppColor.grey,
@@ -106,11 +112,8 @@ class RideStartedSheet extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 Row(
-                  children: const [
-                    _InfoChip(
-                      icon: Icons.route,
-                      text: "4 km",
-                    ),
+                  children:  [
+                    _InfoChip(icon: Icons.route, text: "${data.ride?.distance.toString()}km"),
                     SizedBox(width: 10),
                     _InfoChip(icon: Icons.timer, text: "18 mins ETA"),
                   ],
@@ -124,7 +127,7 @@ class RideStartedSheet extends StatelessWidget {
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Row(
                         children: [
                           Icon(
@@ -141,13 +144,46 @@ class RideStartedSheet extends StatelessWidget {
                       ),
                       SizedBox(height: 6),
                       Text(
-                        "droplocation",
+                        data!.ride!.dropLocation!.coordinates.toString(),
                         style: TextStyle(color: Colors.grey),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 10),
+
+                GestureDetector(
+                  onTap: () async {
+                    final result = await controller.driverArrived();
+
+                    debugPrint("driver arrived result : ${result.message} ${result.success} ${result.data}");
+                    if(result.success){
+
+                      debugPrint("messsage : ${result.message} ${result.data}");
+                      
+                      AppSnackBar.show(context, message: result.message, backgroundColor: Colors.green);
+                    }
+                  },
+                  child: Card(
+                    color:AppColor.primaryYellow,
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Container(
+                        width: double.infinity,
+                        child: Center(
+                          child: Text(
+                            "Arrived",
+                            style: TextStyle(
+                              color: AppColor.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: const [

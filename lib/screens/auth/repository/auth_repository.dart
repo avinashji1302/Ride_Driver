@@ -46,6 +46,8 @@ class AuthRepository {
     String deviceType,
     String deviceToken,
   ) async {
+
+        debugPrint("input $otp $mobileOtpId $deviceId $deviceType ");
     final responsne = await HttpClient.post(
       ApiEndpoints.varifyOTP,
       headers: {
@@ -60,6 +62,9 @@ class AuthRepository {
         "deviceToken": deviceToken,
       },
     );
+
+
+
 
     debugPrint("varify result : ${responsne.body}");
     final json = jsonDecode(responsne.body);
