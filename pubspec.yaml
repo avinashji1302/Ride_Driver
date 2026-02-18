@@ -43,6 +43,7 @@ dependencies:
   google_maps_flutter: ^2.14.0
   socket_io_client: ^3.1.4
   intl_utils: ^2.8.13
+  flutter_intl_phone_field: ^0.0.7
 
 dev_dependencies:
   flutter_test:

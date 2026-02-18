@@ -65,19 +65,11 @@ class SocketService {
       debugPrint("✅ Driver is now online: ${data['ok']}");
     });
 
-    // socket!.on("connect", () {
-    //   print(
-    //     "✅ Socket connected: "
-    //     "socket.id. ",
-    //   );
-    //   // Automatically go online after connection
-    //   // socket.emit("driver:online", driverId);
-    //   // log("📤 Sent driver:online for driver: " + driverId);
-    // });
+
 
  
 
-    // New ride offered to driver
+    // New ride offered to driver (done)
     socket!.on("ride:new", (data) {
       debugPrint("🆕 NEW RIDE OFFERED: $data");
       // Parse and show to driver
@@ -96,7 +88,7 @@ class SocketService {
       }
     });
 
-    // Response after driver accepts ride
+    // Response after driver accepts ride (done)
     socket!.on("ride:accept:response", (data) {
       debugPrint("✅ RIDE ACCEPT RESPONSE: $data");
     });

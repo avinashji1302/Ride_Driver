@@ -17,114 +17,116 @@ class VarifyOtp extends StatelessWidget {
         foregroundColor: Colors.black,
         leading: const BackButton(),
       ),
-      body: Consumer<LoginProvider>(
-        builder:
-            (BuildContext context, LoginProvider controller, Widget? child) {
-              return Padding(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 40),
-
-                    const Text(
-                      "Phone verification",
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
+      body: SafeArea(
+        child: Consumer<LoginProvider>(
+          builder:
+              (BuildContext context, LoginProvider controller, Widget? child) {
+                return Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 40),
+        
+                      const Text(
+                        "Phone verification",
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-
-                    const SizedBox(height: 8),
-
-                    const Text(
-                      "Enter your OTP code",
-                      style: TextStyle(color: Colors.grey),
-                    ),
-
-                    const SizedBox(height: 40),
-
-                    /// OTP boxes
-                    TextField(
-                      controller: controller.otpController,
-                      keyboardType: TextInputType.number,
-                      maxLength: 6,
-                      decoration: const InputDecoration(
-                        hintText: "Enter OTP",
-                        border: OutlineInputBorder(),
-                        counterText: "",
+        
+                      const SizedBox(height: 8),
+        
+                      const Text(
+                        "Enter your OTP code",
+                        style: TextStyle(color: Colors.grey),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-
-                    /// Resend
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Text("Didn’t receive code? "),
-                        Text(
-                          "Resend again",
-                          style: TextStyle(
-                            color: Color(0xFFF2B705),
-                            fontWeight: FontWeight.bold,
+        
+                      const SizedBox(height: 40),
+        
+                      /// OTP boxes
+                      TextField(
+                        controller: controller.otpController,
+                        keyboardType: TextInputType.number,
+                        maxLength: 6,
+                        decoration: const InputDecoration(
+                          hintText: "Enter OTP",
+                          border: OutlineInputBorder(),
+                          counterText: "",
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+        
+                      /// Resend
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Text("Didn’t receive code? "),
+                          Text(
+                            "Resend again",
+                            style: TextStyle(
+                              color: Color(0xFFF2B705),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+        
+                      const Spacer(),
+        
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: Size(double.infinity, 50),
+                          backgroundColor: AppColor.primaryYellow,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                      ],
-                    ),
-
-                    const Spacer(),
-
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: Size(double.infinity, 50),
-                        backgroundColor: AppColor.primaryYellow,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      onPressed: () async {
-                        final result = await controller.varifyOtpHandle(
-                          controller.mobileOtpId,
-                        );
-
-                        debugPrint("result : $result");
-
-                        if (result.success) {
-                          AppSnackBar.show(
-                            context,
-                            message: result.message,
-                            backgroundColor: Colors.green,
+                        onPressed: () async {
+                          final result = await controller.varifyOtpHandle(
+                            controller.mobileOtpId,
                           );
-
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => HomeScreen()),
-                          );
-                        } else {
-                          AppSnackBar.show(
-                            context,
-                            message: result.message,
-                            backgroundColor: Colors.red,
-                          );
-                        }
-                      },
-                      child: controller.isloading
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2,
+        
+                          debugPrint("result : $result");
+        
+                          if (result.success) {
+                            AppSnackBar.show(
+                              context,
+                              message: result.message,
+                              backgroundColor: Colors.green,
+                            );
+        
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => HomeScreen()),
+                            );
+                          } else {
+                            AppSnackBar.show(
+                              context,
+                              message: result.message,
+                              backgroundColor: Colors.red,
+                            );
+                          }
+                        },
+                        child: controller.isloading
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : Text(
+                                "Varify",
+                                style: TextStyle(color: Colors.white),
                               ),
-                            )
-                          : Text(
-                              "Varify",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                    ),
-                  ],
-                ),
-              );
-            },
+                      ),
+                    ],
+                  ),
+                );
+              },
+        ),
       ),
     );
   }

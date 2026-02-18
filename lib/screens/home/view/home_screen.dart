@@ -4,6 +4,7 @@ import 'package:app/screens/home/components/home_page.dart';
 import 'package:app/screens/home/components/map_page.dart';
 import 'package:app/screens/home/components/upcoming_ride.dart';
 import 'package:app/screens/home/viewModel/home_provider.dart';
+import 'package:app/screens/profile/view/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,15 +20,12 @@ class _HomeScreenState extends State<HomeScreen> {
 @override
   void initState() {
     super.initState();
-
     final homeProvider = context.read<HomeProvider>();
-   
-
     SocketService().attachHomeProvider(homeProvider);
 
-    
-   
-
+    // Future.microtask(() {
+    //   context.read<HomeProvider>().avilbleRdies();
+    // });
     debugPrint("🏠 HomePage initialized & provider attached");
   }
 
@@ -39,6 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final List<Widget> _pages = [
       const HomePage(),
       const MapPage(),
+      const DriverProfileScreen(),
       const Center(child: Text("Profile Page")),
     ];
 

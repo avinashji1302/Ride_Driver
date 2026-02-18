@@ -15,6 +15,8 @@ class LoginProvider extends ChangeNotifier {
   final TextEditingController otpController = TextEditingController(
     text: "1234",
   );
+
+  final TextEditingController countryCode = TextEditingController(text: "+91");
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   bool isloading = false;
@@ -27,7 +29,7 @@ class LoginProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final response = await repository.login(numberController.text, "+91");
+      final response = await repository.login(numberController.text, countryCode.text);
       isloading = false;
       notifyListeners();
 
@@ -69,11 +71,13 @@ class LoginProvider extends ChangeNotifier {
         "",
       );
 
-      debugPrint("passed data is : $mobileOtpId ${otpController.text} $deviceId ");
+      debugPrint(
+        "passed data is : $mobileOtpId ${otpController.text} $deviceId ",
+      );
       isloading = false;
       notifyListeners();
-//  debugPrint("response is : ${response.data!.id}");
-//       debugPrint("token  is : ${response.data!.token}");
+      //  debugPrint("response is : ${response.data!.id}");
+      //       debugPrint("token  is : ${response.data!.token}");
 
       if (response.success && response.data != null) {
         await _storage.saveSession(
@@ -83,13 +87,13 @@ class LoginProvider extends ChangeNotifier {
 
         await _storage.saveUserId(response.data!.id);
 
-         final accessToken = await _storage.getAccessToken();
-           final driverId = await _storage.getUserId();
+        // final accessToken = await _storage.getAccessToken();
+        // final driverId = await _storage.getUserId();
 
-          debugPrint("raccess : ${accessToken}. $driverId");
-             debugPrint("driverId}. $driverId");
+        // debugPrint("raccess : ${accessToken}. $driverId");
+        // debugPrint("driverId}. $driverId");
 
-           SocketService().connect(accessToken!, driverId!);
+        // SocketService().connect(accessToken!, driverId!);
 
         return ApiResponse(
           success: response.success,

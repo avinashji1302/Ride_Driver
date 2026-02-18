@@ -18,4 +18,13 @@ class ApiEndpoints {
   static const receivedPayment = "$baseUrl/v1/driver/ride/receivedPayment";
 
 
+  // {{baseUrl}}/v1/driver/go-online
+
+
+  static const goOnline = "$baseUrl/v1/driver/go-online";
+
+  static const available = "$baseUrl/v1/driver/ride/available";
+
+
+  // 'http://localhost:5678/v1/driver/ride/available'
 }

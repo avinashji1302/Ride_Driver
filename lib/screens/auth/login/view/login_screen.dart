@@ -5,6 +5,7 @@ import 'package:app/screens/auth/login/viewModel/login_provider.dart';
 import 'package:app/screens/auth/widgets/input_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_intl_phone_field/flutter_intl_phone_field.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -25,7 +26,7 @@ class LoginScreen extends StatelessWidget {
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(24),
               child: Form(
-                 key: controller.formKey,
+                key: controller.formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -46,7 +47,7 @@ class LoginScreen extends StatelessWidget {
                         SizedBox(
                           width: 100,
                           child: InputFieldWidget(
-                            controller: controller.numberController,
+                            controller: controller.countryCode,
                             hint: "+91",
                             validator: Validators.validateCountryCode,
                             keyboardType: TextInputType.number,
@@ -62,7 +63,7 @@ class LoginScreen extends StatelessWidget {
                         // Phone number
                         Expanded(
                           child: InputFieldWidget(
-                             controller: controller.numberController,
+                            controller: controller.numberController,
                             hint: "Mobile Number",
                             validator: Validators.validatePhone,
                             keyboardType: TextInputType.phone,
@@ -75,6 +76,19 @@ class LoginScreen extends StatelessWidget {
                         ),
                       ],
                     ),
+
+//                     SizedBox(height: 10,)
+// ,
+//                     IntlPhoneField(
+//                       decoration: InputDecoration(
+//                         labelText: 'Phone Number',
+//                         border: OutlineInputBorder(borderSide: BorderSide()),
+//                       ),
+//                       initialCountryCode: 'IN',
+//                       onChanged: (phone) {
+//                         print(phone.completeNumber);
+//                       },
+//                     ),
                     const SizedBox(height: 8),
 
                     // GestureDetector(
@@ -103,9 +117,13 @@ class LoginScreen extends StatelessWidget {
 
                         onPressed: () async {
                           final result = await controller.loginHandle();
-                            debugPrint(":data is : ${result}");
-                          if(result.success){
-                           Navigator.of(context).push(MaterialPageRoute(builder: (context)=>VarifyOtp()));
+                          debugPrint(":data is : ${result}");
+                          if (result.success) {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => VarifyOtp(),
+                              ),
+                            );
                           }
                         },
                         child: const Text(
