@@ -1,3 +1,4 @@
+import 'package:app/config/common/widgets/show_common_statusDailog.dart';
 import 'package:app/config/networks/api_reposne.dart';
 import 'package:app/config/socket/socket.dart';
 import 'package:app/config/storage/auth_storage.dart';
@@ -24,6 +25,7 @@ class HomeProvider extends ChangeNotifier {
   final AuthStorage _storage = AuthStorage();
   RideAcceptedModel? rideDetails;
   ArrivedModel? reachedAtLocation;
+  bool showUpcomingDailog = true;
 
   int tapBottemIndex = 0;
   bool isDriverAvailable = false;
@@ -32,7 +34,7 @@ class HomeProvider extends ChangeNotifier {
   HomeFlow _flow = HomeFlow.idle;
   HomeFlow get flow => _flow;
 
-   List<AllRides>allAvailableRides=[]; 
+  List<AllRides> allAvailableRides = [];
 
   bool isLoading = false;
   String otp = '';
@@ -40,11 +42,14 @@ class HomeProvider extends ChangeNotifier {
   void changeTab(int index) {
     if (index == tapBottemIndex) return;
 
-
     tapBottemIndex = index;
-    if(index==0){
+    if (index == 0) {
       allAvailableRides.clear();
       avilbleRdies();
+    }
+
+    if(index==2){
+      
     }
     notifyListeners();
   }
@@ -52,6 +57,27 @@ class HomeProvider extends ChangeNotifier {
   void isDriverOnline() {
     isDriverAvailable = true;
     notifyListeners();
+  }
+
+  void hideDailog() {
+    avilbleRdies();
+    showUpcomingDailog = false;
+
+    notifyListeners();
+  }
+
+  void setFlow(HomeFlow value) {
+    _flow = value;
+    notifyListeners();
+  }
+
+  void showDriverArrivedSheet(BuildContext context) {
+    showCommonStatusDialog(
+      context: context,
+      icon: Icons.bike_scooter,
+      title: "User Canceld the ride",
+      message: "Please look for another rider user canceld the ride.",
+    );
   }
 
   /// recieved  the payment
@@ -90,10 +116,22 @@ class HomeProvider extends ChangeNotifier {
     }
   }
 
+  Future<ApiResponse<void>> goOffline() async{
+       final response = await repository.goOfflines();
+
+       if(response.success){
+        debugPrint("successs ${response.data}");
+        isDriverAvailable=false;
+       }
+      notifyListeners();
+       return ApiResponse(success: false, message:response.message);
+    }
+  
+
   /// ✅ Called from socket
   Future<void> incomingRide(RideAcceptedSocketModel data) async {
     debugPrint("📥 Incoming Ride ID: ${data.id} $data");
-
+    showUpcomingDailog = true;
     incomingRideId = data.id;
     _flow = HomeFlow.newRide;
 
@@ -256,7 +294,7 @@ class HomeProvider extends ChangeNotifier {
       );
       if (response.data != null) {
         tapBottemIndex = 0;
-        _flow=HomeFlow.idle;
+        _flow = HomeFlow.idle;
       }
 
       debugPrint(
@@ -291,7 +329,8 @@ class HomeProvider extends ChangeNotifier {
         "payemnt received ${response.message} ${response.success} ${response.data!.rides}",
       );
       if (response.data != null) {
-         allAvailableRides.addAll(response.data!.rides);
+        allAvailableRides.clear();
+        allAvailableRides.addAll(response.data!.rides);
       }
 
       debugPrint(

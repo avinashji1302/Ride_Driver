@@ -120,4 +120,79 @@ class AuthRepository {
 
     return ApiResponse<RegisterModel>.fromJson(json, (data) => (RegisterModel.fromJson(data)));
   }
+
+
+
+//    //------------------------------- getting image Url of profiel--------------------------------
+
+//   Future<ApiResponse<String>> uploadDocsImage(File imageFile) async {
+   
+
+  
+
+//     final response = await HttpClient.multipart(
+//       ApiEndpoints.uploadImage,
+//       file: imageFile,
+//       fieldName: "image",
+//       headers: { "Accept": "application/json"},
+//     );
+
+//     final json = jsonDecode(response.body);
+
+//     debugPrint(
+//       "image response response : ${response.body}. ${json['results']['imageUrl']}",
+//     );
+
+//     return ApiResponse<String>.fromJson(
+//       json,
+//      (data) => (data as Map<String, dynamic>)['imageUrl'] as String,
+//     );
+//   }
+
+//   //----------------------------------------------update profile---------------------------------
+
+//  Future<ApiResponse<void>> uploadDriverDocuments({
+//   String? aadharFront,
+//   String? aadharBack,
+//   String? licenseFront,
+//   String? licenseBack,
+//   String? rcFront,
+//   String? rcBack,
+//   String? pan,
+//   String? insurance,
+// }) async {
+  
+
+//   final response = await HttpClient.post(
+//     ApiEndpoints.uploadDocs,
+//     headers: {
+//       "Accept": "application/json",
+//       "Content-Type": "application/json",
+//     },
+//     body: {
+//       "aadharFront": aadharFront,
+//       "aadharBack": aadharBack,
+//       "dlFront": licenseFront,
+//       "dlBack": licenseBack,
+//       "rcFront": rcFront,
+//       "rcBack": rcBack,
+//       "panFront": pan,
+    
+//     },
+//   );
+
+
+
+
+
+
+// // rcFront
+// // rcBack
+
+//   debugPrint("UPLOAD DOCS RESPONSE: ${response.body}");
+
+//   final json = jsonDecode(response.body);
+
+//   return ApiResponse<void>.fromJson(json, (_) {});
+// }
 }

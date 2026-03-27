@@ -1,9 +1,10 @@
 class ApiEndpoints {
-  static const baseUrl = "http://192.168.2.58:5678";
-  // static const baseUrl = "http://localhost:5678";
+  static const baseUrl = "http://192.168.2.67:5678"; // other system
+  // static const baseUrl = "http://192.168.2.65:5678"; //locally
 
   //Auth
   static const register = "$baseUrl/v1/driver/register";
+    static const uploadDocs = "$baseUrl/v1/driver/upload-driver-docs";
   static const login = "$baseUrl/v1/driver/auth/send-otp-login";
   static const varifyOTP = "$baseUrl/v1/driver/auth/verify-otp-login";
 
@@ -18,13 +19,18 @@ class ApiEndpoints {
   static const receivedPayment = "$baseUrl/v1/driver/ride/receivedPayment";
 
 
-  // {{baseUrl}}/v1/driver/go-online
+
 
 
   static const goOnline = "$baseUrl/v1/driver/go-online";
-
   static const available = "$baseUrl/v1/driver/ride/available";
+ static const logout = "$baseUrl/v1/driver/logout";
+  static const goOffline = "$baseUrl/v1/driver/go-offline";
 
 
-  // 'http://localhost:5678/v1/driver/ride/available'
+//------profile---------
+ static const getProfile = "$baseUrl/v1/driver/me";
+  static const updateProfle = "$baseUrl/v1/driver/update-profile";
+
+//  v1/driver/update-profile
 }

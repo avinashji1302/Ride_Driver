@@ -2,6 +2,7 @@ import 'package:app/config/colors/app_color.dart';
 import 'package:app/core/validator/validators.dart';
 import 'package:app/screens/auth/login/view/varify_otp.dart';
 import 'package:app/screens/auth/login/viewModel/login_provider.dart';
+import 'package:app/screens/auth/register/view/register_screen.dart';
 import 'package:app/screens/auth/widgets/input_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -77,30 +78,6 @@ class LoginScreen extends StatelessWidget {
                       ],
                     ),
 
-//                     SizedBox(height: 10,)
-// ,
-//                     IntlPhoneField(
-//                       decoration: InputDecoration(
-//                         labelText: 'Phone Number',
-//                         border: OutlineInputBorder(borderSide: BorderSide()),
-//                       ),
-//                       initialCountryCode: 'IN',
-//                       onChanged: (phone) {
-//                         print(phone.completeNumber);
-//                       },
-//                     ),
-                    const SizedBox(height: 8),
-
-                    // GestureDetector(
-                    //   onTap: () {
-
-                    //   },
-                    //   child: Text(
-                    //     "Forget Password",
-                    //     style: TextStyle(color: Colors.red),
-                    //     textDirection: TextDirection.rtl,
-                    //   ),
-                    // ),
                     const SizedBox(height: 20),
 
                     /// Sign in button
@@ -126,10 +103,12 @@ class LoginScreen extends StatelessWidget {
                             );
                           }
                         },
-                        child: const Text(
-                          "Sign in",
-                          style: TextStyle(color: Colors.white),
-                        ),
+                        child: controller.isloading
+                            ? CircularProgressIndicator(color: Colors.white)
+                            : const Text(
+                                "Sign in",
+                                style: TextStyle(color: Colors.white),
+                              ),
                       ),
                     ),
 
@@ -148,29 +127,18 @@ class LoginScreen extends StatelessWidget {
 
                     const SizedBox(height: 20),
 
-                    /// Social buttons
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.center,
-                    //   children: const [
-                    //     SocialButton(icon: Icons.mail),
-                    //     SizedBox(width: 15),
-                    //     SocialButton(icon: Icons.facebook),
-                    //     SizedBox(width: 15),
-                    //     SocialButton(icon: Icons.apple),
-                    //   ],
-                    // ),
                     const SizedBox(height: 20),
 
                     /// Footer
                     Center(
                       child: GestureDetector(
                         onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => SignUpScreen(),
-                          //   ),
-                          // );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RegisterScreenOne(),
+                            ),
+                          );
                         },
                         child: RichText(
                           text: const TextSpan(

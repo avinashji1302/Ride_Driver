@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           _pages[controller.tapBottemIndex],
 
-          if(controller.flow==HomeFlow.newRide)
+          if(controller.flow==HomeFlow.newRide &&controller.showUpcomingDailog)
            const UpcomingRide(),
         ],
       ),

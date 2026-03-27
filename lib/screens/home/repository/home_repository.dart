@@ -34,6 +34,31 @@ class HomeRepository {
     );
   }
 
+
+    //------------------------------------Go offilkine---------------------------------
+
+  Future<ApiResponse<RideAcceptedModel>> goOfflines() async {
+    final token = await AuthStorage().getAccessToken();
+
+    final response = await HttpClient.post(
+      ApiEndpoints.goOffline,
+      headers: {
+        "Accept": "application/json",
+        "Content-type": "application/json",
+        "Authorization": "Bearer $token",
+      },
+      
+    );
+    debugPrint("  go offline--------- : ${response.body}");
+
+    final json = jsonDecode(response.body);
+
+    return ApiResponse<RideAcceptedModel>.fromJson(
+      json,
+      (data) => RideAcceptedModel.fromJson(data),
+    );
+  }
+
   //--------------------------------ride accedpted-------------------------------
 
   Future<ApiResponse<RideAcceptedModel>> rideAccepted(String rideId) async {

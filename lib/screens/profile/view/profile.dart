@@ -1,26 +1,43 @@
+import 'package:app/config/common/snacbar/top_snacbar.dart';
+import 'package:app/screens/auth/login/view/login_screen.dart';
+import 'package:app/screens/home/viewModel/home_provider.dart';
+import 'package:app/screens/profile/view/update_profile.dart';
+import 'package:app/screens/profile/view/upload_doc.dart';
+import 'package:app/screens/profile/view_model/logout_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:app/config/colors/app_color.dart';
+import 'package:provider/provider.dart';
 
-class DriverProfileScreen extends StatelessWidget {
+class DriverProfileScreen extends StatefulWidget {
   const DriverProfileScreen({super.key});
 
   @override
+  State<DriverProfileScreen> createState() => _DriverProfileScreenState();
+}
+
+class _DriverProfileScreenState extends State<DriverProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    /// ⭐⭐⭐ CALL API WHEN SCREEN LOADS
+    Future.microtask(() {
+      context.read<LogoutProvider>().getProfile(); // ⭐ ADDED
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final controller = context.watch<LogoutProvider>();
+    final homeProvider = context.watch<HomeProvider>();
+
+    final user = controller.userPrifile; // ⭐ ADDED
+
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
-      // appBar: AppBar(
-      //   elevation: 0,
-      //   backgroundColor: AppColor.primaryYellow,
-      //   title: const Text(
-      //     "Driver Profile",
-      //     style: TextStyle(fontWeight: FontWeight.w600),
-      //   ),
-      //   centerTitle: true,
-      // ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            
             /// Top Profile Section
             Container(
               width: double.infinity,
@@ -33,30 +50,33 @@ class DriverProfileScreen extends StatelessWidget {
                 ),
               ),
               child: Column(
-                children: const [
-                  SizedBox(height: 10,),
+                children: [
+                  const SizedBox(height: 10),
+
                   CircleAvatar(
                     radius: 50,
                     backgroundImage: NetworkImage(
-                      "https://randomuser.me/api/portraits/men/32.jpg",
+                      user?.driver?.profile ??
+                          "https://randomuser.me/api/portraits/men/32.jpg", // ⭐ UPDATED
                     ),
                   ),
-                  SizedBox(height: 12),
+
+                  const SizedBox(height: 12),
+
                   Text(
-                    "Avinash Gupta",
-                    style: TextStyle(
+                    user?.driver?.firstName ?? "No Name", // ⭐ UPDATED
+                    style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(height: 4),
+
+                  const SizedBox(height: 4),
+
                   Text(
-                    "⭐ 4.8 Rating",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                    ),
+                    "⭐ ${user?.driver?.rating ?? "0.0"} Rating", // ⭐ UPDATED
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
                   ),
                 ],
               ),
@@ -69,75 +89,152 @@ class DriverProfileScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 children: [
-
                   _buildInfoTile(
                     icon: Icons.phone,
                     title: "Phone",
-                    value: "+91 9876543210",
+                    value:
+                        "${user?.driver?.countryCode ?? ""} ${user?.driver?.mobile ?? ""}",
                   ),
 
                   _buildInfoTile(
                     icon: Icons.email,
                     title: "Email",
-                    value: "mukeshdriver@email.com",
+                    value: user?.driver?.email ?? "-",
                   ),
 
                   _buildInfoTile(
+                    icon: Icons.location_city,
+                    title: "City",
+                    value: user?.driver?.city ?? "-",
+                  ),
+
+                  _buildInfoTile(
+                    icon: Icons.home,
+                    title: "Address",
+                    value: user?.driver?.address ?? "-",
+                  ),
+
+                  _buildInfoTile(
+                    icon: Icons.bloodtype,
+                    title: "Blood Group",
+                    value: user?.driver?.bloodGroup ?? "-",
+                  ),
+
+                  /// 🚗 VEHICLE DATA
+                  _buildInfoTile(
                     icon: Icons.directions_car,
                     title: "Vehicle",
-                    value: "Swift Dzire - White",
+                    value:
+                        "${user?.vehicle?.model ?? "-"} (${user?.vehicle?.type ?? ""})",
                   ),
 
                   _buildInfoTile(
                     icon: Icons.confirmation_number,
                     title: "Vehicle Number",
-                    value: "RJ14 AB 4589",
+                    value: user?.vehicle?.number ?? "-",
                   ),
 
                   _buildInfoTile(
-                    icon: Icons.calendar_today,
-                    title: "Member Since",
-                    value: "January 2024",
+                    icon: Icons.color_lens,
+                    title: "Color",
+                    value: user?.vehicle?.color ?? "-",
                   ),
 
-                  const SizedBox(height: 20),
-
-                  /// Stats Row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _buildStatCard("245", "Total Rides"),
-                      _buildStatCard("₹18,540", "Earnings"),
-                      _buildStatCard("96%", "Acceptance"),
-                    ],
+                  _buildInfoTile(
+                    icon: Icons.approval,
+                    title: "Registration Status",
+                    value: user?.driver?.status ?? "-", // ⭐ UPDATED
                   ),
 
                   const SizedBox(height: 30),
 
-                  /// Edit Button
+                  /// ⭐⭐⭐ UPLOAD DOCUMENT BUTTON (ADD HERE)
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColor.primaryYellow,
+                        backgroundColor:
+                            AppColor.primaryYellow, // or AppColor.primaryYellow
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => UploadDocsScreen(), // ⭐ your screen
+                          ),
+                        );
+                      },
                       child: const Text(
-                        "Edit Profile",
+                        "Upload Documents",
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 16,
-                          color: Colors.white
+                          color: Colors.white,
                         ),
                       ),
                     ),
                   ),
 
                   const SizedBox(height: 20),
+
+                  /// Buttons
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const UpdateProfileScreen(),
+                              ),
+                            );
+                          },
+                          child: const Text("Edit Profile"),
+                        ),
+                      ),
+
+                      const SizedBox(width: 10),
+
+                      Expanded(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                          ),
+                          onPressed: () async {
+                            final result = await controller.logout();
+
+                            if (result.success) {
+                              homeProvider.tapBottemIndex = 0;
+                            }
+
+                            if (result.success) {
+                              AppSnackBar.show(
+                                context,
+                                message: result.message,
+                                backgroundColor: Colors.green,
+                              );
+
+                              homeProvider.isDriverAvailable = false;
+
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => LoginScreen(),
+                                ),
+                              );
+                            }
+                          },
+                          child: const Text(
+                            "Logout",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -146,81 +243,69 @@ class DriverProfileScreen extends StatelessWidget {
       ),
     );
   }
+}
 
-  /// Info Tile Widget
-  static Widget _buildInfoTile({
-    required IconData icon,
-    required String title,
-    required String value,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+/// Info Tile Widget static Widget
+_buildInfoTile({
+  required IconData icon,
+  required String title,
+  required String value,
+}) {
+  return Container(
+    margin: const EdgeInsets.only(bottom: 12),
+    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Row(
+      children: [
+        Icon(icon, color: AppColor.primaryYellow),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+/// Stat Card Widget static Widget
+_buildStatCard(String value, String label) {
+  return Expanded(
+    child: Container(
+      margin: const EdgeInsets.symmetric(horizontal: 4),
+      padding: const EdgeInsets.symmetric(vertical: 16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Row(
+      child: Column(
         children: [
-          Icon(icon, color: AppColor.primaryYellow),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  value,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
+          Text(
+            value,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
+          const SizedBox(height: 4),
+          Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
         ],
       ),
-    );
-  }
-
-  /// Stat Card Widget
-  static Widget _buildStatCard(String value, String label) {
-    return Expanded(
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 4),
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          children: [
-            Text(
-              value,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 12,
-                color: Colors.grey,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+    ),
+  );
 }

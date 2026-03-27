@@ -1,4 +1,5 @@
 import 'package:app/config/colors/app_color.dart';
+import 'package:app/config/socket/socket.dart';
 import 'package:app/screens/home/viewModel/home_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -40,7 +41,7 @@ class _UpcomingRideState extends State<UpcomingRide>
     return Consumer<HomeProvider>(
       builder: (BuildContext context, HomeProvider controller, Widget? child) {
         return Positioned(
-          bottom: 50,
+          top: 230,
           left: 16,
           right: 16,
           child: AnimatedContainer(
@@ -68,16 +69,7 @@ class _UpcomingRideState extends State<UpcomingRide>
                 child: Stack(
                   children: [
 
-                    /// Close Icon
-                    Positioned(
-                      top: 0,
-                      right: 0,
-                      child: Icon(
-                        Icons.close,
-                        color: Colors.red,
-                        weight: 900,
-                      ),
-                    ),
+                   
 
                     Column(
                       mainAxisSize: MainAxisSize.min,
@@ -250,8 +242,9 @@ class _UpcomingRideState extends State<UpcomingRide>
                           children: [
                             Expanded(
                               child: GestureDetector(
-                                onTap: () {
-                                  controller.rideAccepted(controller.incomingRideId);
+                                onTap: ()  async {
+                               await   controller.rideAccepted(controller.incomingRideId);
+                                  SocketService().joinRoom(controller.incomingRideId);
                                 },
                                 child: Card(
                                   color: AppColor.primaryYellow,
@@ -291,6 +284,23 @@ class _UpcomingRideState extends State<UpcomingRide>
                           ],
                         ),
                       ],
+                    ),
+
+                     /// Close Icon
+                    Positioned(
+                      top: 0,
+                      right: 10,
+                      child: GestureDetector(
+                         onTap: (){
+                        controller.hideDailog();
+                      },
+                        child: Icon(
+                          Icons.close,
+                          color: Colors.red,
+                          weight: 900,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ],
                 ),

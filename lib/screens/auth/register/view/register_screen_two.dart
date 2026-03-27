@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:app/config/colors/app_color.dart';
+import 'package:app/config/common/snacbar/top_snacbar.dart';
 import 'package:app/screens/auth/login/view/login_screen.dart';
 import 'package:app/screens/auth/register/viewModel/register_provider.dart';
 import 'package:app/screens/auth/widgets/input_field.dart';
@@ -20,10 +21,6 @@ class RegisterScreenTwo extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         child: Column(
           children: [
-            // InputFieldWidget(
-            //   hint: "Vehicle Type",
-            //   controller: TextEditingController(),
-            // ),
             DropdownButtonFormField<String>(
               decoration: InputDecoration(
                 border: OutlineInputBorder(
@@ -54,7 +51,7 @@ class RegisterScreenTwo extends StatelessWidget {
               }).toList(),
 
               onChanged: (String? value) {
-                controller.vehicleTypeController = value;
+                controller.vehicleTypeController = value!;
               },
             ),
 
@@ -62,28 +59,28 @@ class RegisterScreenTwo extends StatelessWidget {
 
             InputFieldWidget(
               hint: "Vehicle Number",
-              controller: TextEditingController(),
+              controller: controller.vehicleNumberController,
             ),
 
             const SizedBox(height: 10),
 
             InputFieldWidget(
               hint: "Vehicle Model",
-              controller: TextEditingController(),
+              controller: controller.vehicleModel,
             ),
 
             const SizedBox(height: 10),
 
             InputFieldWidget(
               hint: "RC Number",
-              controller: TextEditingController(),
+              controller: controller.rcNumberController,
             ),
 
             const SizedBox(height: 10),
 
             InputFieldWidget(
               hint: "Vehicle Color",
-              controller: TextEditingController(),
+              controller: controller.vehicleColorController,
             ),
 
             const SizedBox(height: 10),
@@ -93,14 +90,14 @@ class RegisterScreenTwo extends StatelessWidget {
                 Expanded(
                   child: InputFieldWidget(
                     hint: "Vehicle Age",
-                    controller: TextEditingController(),
+                    controller: controller.vehicleAgeController,
                   ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: InputFieldWidget(
                     hint: "Seating Capacity",
-                    controller: TextEditingController(),
+                    controller:controller.seatingCapacityController,
                   ),
                 ),
               ],
@@ -110,42 +107,90 @@ class RegisterScreenTwo extends StatelessWidget {
 
             InputFieldWidget(
               hint: "Owner Name",
-              controller: TextEditingController(),
+              controller:controller.ownerNameController,
             ),
 
             const SizedBox(height: 10),
 
             InputFieldWidget(
               hint: "Owner Mobile",
-              controller: TextEditingController(),
+              controller: controller.ownerMobileController,
             ),
 
             const SizedBox(height: 30),
 
             /// REGISTER BUTTON
+            // SizedBox(
+            //   width: double.infinity,
+            //   child: ElevatedButton(
+            //     onPressed: () async {
+            //       final result = await controller.registerHere();
+
+            //       print(("result : $result"));
+
+            //       if (result.success) {
+            //         debugPrint("result is : ${result.data}");
+
+            //         AppSnackBar.show(context, message: result.message , backgroundColor: Colors.green);
+            //          Navigator.of(context).push(
+            //           MaterialPageRoute(builder: (context) => LoginScreen()),
+            //         );
+            //       }
+            //     },
+            //     style: ElevatedButton.styleFrom(
+            //       backgroundColor: AppColor.primaryYellow,
+            //       padding: const EdgeInsets.symmetric(vertical: 14),
+            //     ),
+            //     child:controller.isLoading?CircularProgressIndicator() :const Text(
+            //       "Register",
+            //       style: TextStyle(color: AppColor.black),
+            //     ),
+            //   ),
+            // ),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () async {
-                  final result = await controller.registerHere();
+                onPressed: controller.isLoading
+                    ? null
+                    : () async {
+                        final result = await controller.registerHere();
 
-                  print(("result : $result"));
+                        if (result.success) {
+                          AppSnackBar.show(
+                            context,
+                            message: result.message,
+                            backgroundColor: Colors.green,
+                          );
 
-                  if (result.success) {
-                    debugPrint("result is : ${result.data}");
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => LoginScreen()),
-                    );
-                  }
-                },
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (_) => LoginScreen()),
+                          );
+                        } else {
+                          AppSnackBar.show(
+                            context,
+                            message: result.message,
+                            backgroundColor: Colors.red,
+                          );
+                        }
+                      },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColor.primaryYellow,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
-                child: const Text(
-                  "Register",
-                  style: TextStyle(color: AppColor.black),
-                ),
+                child: controller.isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.black,
+                        ),
+                      )
+                    : const Text(
+                        "Register",
+                        style: TextStyle(color: AppColor.black),
+                      ),
               ),
             ),
           ],

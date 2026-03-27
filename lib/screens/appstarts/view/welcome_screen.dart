@@ -1,6 +1,7 @@
 import 'package:app/config/colors/app_color.dart';
 import 'package:app/screens/auth/login/view/login_screen.dart';
 import 'package:app/screens/auth/register/view/register_screen.dart';
+import 'package:app/screens/profile/view/upload_doc.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -86,7 +87,31 @@ class WelcomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 15),
 
-              /// Login Button with phone
+            
+              /// Login Button with email
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: AppColor.primaryYellow),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>UploadDocsScreen()));
+                  },
+                  child: const Text(
+                    "Upload Document",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: AppColor.primaryYellow,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15),
             ],
           ),
         ),

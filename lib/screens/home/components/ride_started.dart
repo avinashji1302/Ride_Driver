@@ -1,6 +1,10 @@
 import 'package:app/config/colors/app_color.dart';
 import 'package:app/config/common/snacbar/top_snacbar.dart';
 import 'package:app/config/common/widgets/cylinder.dart';
+import 'package:app/config/socket/socket.dart';
+import 'package:app/screens/audio/view/audio_call.dart';
+import 'package:app/screens/audio/view/calling_screen.dart';
+import 'package:app/screens/chat/view/chat_screen.dart';
 import 'package:app/screens/home/viewModel/home_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -15,8 +19,8 @@ class RideStartedSheet extends StatelessWidget {
     final data = controller.rideDetails;
 
     return DraggableScrollableSheet(
-      initialChildSize: 0.40,
-      minChildSize: 0.25,
+      initialChildSize: 0.5,
+      minChildSize: 0.3,
       maxChildSize: 1,
       builder: (context, scrollController) {
         return Container(
@@ -47,7 +51,7 @@ class RideStartedSheet extends StatelessWidget {
                   ],
                 ),
                 const Divider(),
-            
+
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -112,8 +116,11 @@ class RideStartedSheet extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 Row(
-                  children:  [
-                    _InfoChip(icon: Icons.route, text: "${data.ride?.distance.toString()}km"),
+                  children: [
+                    _InfoChip(
+                      icon: Icons.route,
+                      text: "${data.ride?.distance.toString()}km",
+                    ),
                     SizedBox(width: 10),
                     _InfoChip(icon: Icons.timer, text: "18 mins ETA"),
                   ],
@@ -152,20 +159,75 @@ class RideStartedSheet extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
 
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        // final rideId = controller.rideDetails!.ride!.id
+                        //     .toString();
+
+                        // /// ONLY START CALL
+                        // SocketService().startAudioCall(rideId);
+                        final rideId = controller.rideDetails!.ride!.id
+                            .toString();
+
+                        /// START CALL
+                        SocketService().startAudioCall(rideId);
+
+                        /// 👉 SHOW CALLING UI
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (_) => CallingScreen(rideId: rideId),
+                        //   ),
+                        // );
+                      },
+                      child: _ActionIcon(
+                        icon: Icons.call,
+                        label: "Call",
+                        color: AppColor.primaryYellow,
+                      ),
+                    ),
+
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ChatScreen(rideId: controller.incomingRideId),
+                          ),
+                        );
+                      },
+                      child: _ActionIcon(
+                        icon: Icons.chat,
+                        label: "Message Driver",
+                        color: Colors.red,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+
                 GestureDetector(
                   onTap: () async {
                     final result = await controller.driverArrived();
 
-                    debugPrint("driver arrived result : ${result.message} ${result.success} ${result.data}");
-                    if(result.success){
-
+                    debugPrint(
+                      "driver arrived result : ${result.message} ${result.success} ${result.data}",
+                    );
+                    if (result.success) {
                       debugPrint("messsage : ${result.message} ${result.data}");
-                      
-                      AppSnackBar.show(context, message: result.message, backgroundColor: Colors.green);
+
+                      AppSnackBar.show(
+                        context,
+                        message: result.message,
+                        backgroundColor: Colors.green,
+                      );
                     }
                   },
                   child: Card(
-                    color:AppColor.primaryYellow,
+                    color: AppColor.primaryYellow,
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Container(
@@ -184,27 +246,6 @@ class RideStartedSheet extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: const [
-                    _ActionIcon(
-                      icon: Icons.call,
-                      label: "Call",
-                      color: AppColor.primaryYellow,
-                    ),
-                    _ActionIcon(
-                      icon: Icons.share,
-                      label: "Share",
-                      color: AppColor.primaryYellow,
-                    ),
-                    _ActionIcon(
-                      icon: Icons.warning,
-                      label: "Emergency",
-                      color: Colors.red,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
               ],
             ),
           ),
